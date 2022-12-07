@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/features.dart';
 import 'routes.dart';
 
@@ -11,9 +12,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: SignUpPage.route,
-      onGenerateRoute: PageRouter.generateRoute,);
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SignupBloc>(
+          create: (context) => SignupBloc(),
+        ),
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc(),
+        )
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Book Recommendation System',
+        initialRoute: SignUpPage.route,
+        onGenerateRoute: PageRouter.generateRoute,
+      ),
+    );
   }
 }

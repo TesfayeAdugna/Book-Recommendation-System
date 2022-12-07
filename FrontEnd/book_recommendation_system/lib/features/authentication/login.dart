@@ -1,5 +1,6 @@
 import 'package:book_recommendation_system/features/features.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -71,61 +72,72 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: height * 0.03),
-              // BlocBuilder<LoginBloc, LoginState>(
-              //   builder: (context, state) {
-              //     if (state is LoginFailed) {
-              //       return Text(
-              //         state.error,
-              //         style: MicroYelpText.error,
-              //       );
-              //     } else if (state is LoggingIn) {
-              //       return const CircularProgressIndicator();
-              //     }
-              //     return Container();
-              //   },
-              // ),
-
-              SizedBox(
-                  width: double.maxFinite,
-                  height: 50,
-                  child: ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
+              BlocConsumer<LoginBloc, LoginState>(builder: (context, state) {
+                if (state is LoginFailed) {
+                  return SizedBox(
+                      width: double.maxFinite,
+                      height: 50,
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Text("Sorry! try again!")));
+                } else if (state is LoggingIn) {
+                  return SizedBox(
+                      width: double.maxFinite,
+                      height: 50,
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: const CircularProgressIndicator(
+                            color: Colors.white,
+                          )));
+                }
+                return SizedBox(
+                    width: double.maxFinite,
+                    height: 50,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            BlocProvider.of<LoginBloc>(context).add(
+                              LoginSubmitted(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              ),
+                            );
+                          }
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
                           ),
                         ),
-                      ),
-                      child: Text(
-                        "Login",
-                        style: TextStyle(fontSize: 20),
-                      ))),
+                        child: Text(
+                          "Login",
+                          style: TextStyle(fontSize: 20),
+                        )));
+              }, listener: (context, state) {
+                if (state is LoginSuccessfull) {
+                  Navigator.pushNamed(context, SignUpPage.route);
+                }
+              }),
 
-              // BlocListener<LoginBloc, LoginState>(
-              //   listener: (context, state) {
-              //     if (state is LoginSuccessfull) {
-              //       Navigator.pushNamedAndRemoveUntil(
-              //           context, HomePageNavigator.route, (route) => false);
-              //       // Navigator.pushReplacementNamed(context, HomePageNavigator.route);
-              //     }
-              //   },
-              //   child: RoundedButton(
-              //       buttonText: "Login",
-              //       onClick: () {
-              //         if (_formKey.currentState!.validate()) {
-              //           BlocProvider.of<LoginBloc>(context).add(
-              //             LoginSubmitted(
-              //               email: emailController.text,
-              //               password: passwordController.text,
-              //             ),
-              //           );
-              //         }
-              //       },
-              //       buttonColor: MicroYelpColor.primaryColor,
-              //       textStyle: MicroYelpText.buttonText),
-              // ),
               SizedBox(height: height * 0.03),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,

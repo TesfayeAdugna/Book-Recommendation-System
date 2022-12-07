@@ -1,5 +1,6 @@
 import 'package:book_recommendation_system/features/features.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -59,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: height * 0.02),
                   TextFormField(
-                    controller: emailController,
+                    controller: passwordController,
                     decoration: InputDecoration(
                         border: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -71,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: height * 0.02),
                   TextFormField(
-                    controller: emailController,
+                    controller: confirmPasswordController,
                     decoration: InputDecoration(
                         border: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -85,60 +87,74 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             SizedBox(height: height * 0.03),
-            // BlocBuilder<SignupBloc, SignupState>(
-            //   builder: (context, state) {
-            //     if (state is SignupFailed) {
-            //       return Text(
-            //         state.error,
-            //         style: MicroYelpText.error,
-            //       );
-            //     } else if (state is SigningUserUp) {
-            //       return const CircularProgressIndicator();
-            //     }
-            //     return Container();
-            //   },
-            // ),
-
-            // BlocListener<SignupBloc, SignupState>(
-            //   listener: (context, state) {
-            //     if (state is SignupSuccessful) {
-            //       Navigator.pushNamedAndRemoveUntil(
-            //           context, HomePageNavigator.route, (route) => false);
-            //     }
-            //   },
-            //   child: RoundedButton(
-            //     buttonText: "Sign up",
-            //     onClick: () {
-            //       final formValid = _formKey.currentState!.validate();
-            //       if (!formValid) return;
-            //       BlocProvider.of<SignupBloc>(context).add(
-            //         SignupButtonClicked(
-            //           email: emailController.text,
-            //           password: passwordController.text,
-            //           firstName: firstNameController.text,
-            //           lastName: lastNameController.text,
-            //         ),
-            //       );
-            //     },
-            //     buttonColor: MicroYelpColor.primaryColor,
-            //     textStyle: MicroYelpText.buttonText,
-            //   ),
-            // ),
-
-            SizedBox(
-                width: double.maxFinite,
-                height: 50,
-                child: ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+            BlocConsumer<SignupBloc, SignupState>(
+              builder: (context, state) {
+                if (state is SignupFailed) {
+                  return SizedBox(
+                      width: double.maxFinite,
+                      height: 50,
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Text("Sorry! try again!")));
+                } else if (state is SigningUserUp) {
+                  return SizedBox(
+                      width: double.maxFinite,
+                      height: 50,
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: const CircularProgressIndicator(
+                            color: Colors.white,
+                          )));
+                }
+                return SizedBox(
+                    width: double.maxFinite,
+                    height: 50,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          final formValid = _formKey.currentState!.validate();
+                          if (!formValid) return;
+                          BlocProvider.of<SignupBloc>(context).add(
+                            SignupButtonClicked(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            ),
+                          );
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    child: Text("Sign up", style: TextStyle(fontSize: 20),))),
-
+                        child: Text(
+                          "Sign up",
+                          style: TextStyle(fontSize: 20),
+                        )));
+              },
+              listener: (context, state) {
+                if (state is SignupSuccessful) {
+                  Navigator.pushNamed(context, LoginPage.route);
+                }
+              },
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -155,22 +171,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 )
               ],
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: <Widget>[
-            //     const Text('Already have account?'),
-            //     TextButton(
-            //       child: const Text(
-            //         'Login',
-            //         style: TextStyle(
-            //             color: Colors.blue, fontWeight: FontWeight.bold),
-            //       ),
-            //       onPressed: () {
-            //         // Navigator.pushNamed(context, LoginPage.route);
-            //       },
-            //     )
-            //   ],
-            // ),
           ],
         ),
       ),
