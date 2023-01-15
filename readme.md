@@ -22,3 +22,9 @@ A book recommendation system is a type of recommendation system where we have to
 ![visual presentation of book recommendation system](/images/visual.png)
 
 ## Sample design
+> landing and signup pages
+![landing page and signup page](/images/page1.png)
+> login and home pages
+![login and home pages](/images/page2.png)
+> search and download pages
+![search and download pages](/images/page3.png)
