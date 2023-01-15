@@ -19,3 +19,6 @@ A book recommendation system is a type of recommendation system where we have to
     - The system will recommend books based on the user's previous activities.
 
 ## Visual presentation
+![visual presentation of book recommendation system](/images/visual.png)
+
+## Sample design
